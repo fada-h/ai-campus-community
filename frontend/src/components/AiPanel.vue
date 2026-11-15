@@ -9,6 +9,7 @@ interface ChatMessage {
   role: 'me' | 'ai'
   text: string
   meta?: any
+  steps?: { type: string; name?: string; text?: string; result?: string }[]
   pending?: boolean
   error?: boolean
 }
@@ -28,6 +29,20 @@ const errorText = ref('')
 const suggestions = ref<string[]>([...DEFAULT_SUGGESTIONS])
 const scroller = ref<HTMLElement | null>(null)
 const lastQuestion = ref('')
+
+const TOOL_LABELS: Record<string, string> = {
+  search_knowledge: '查校园资料',
+  search_posts: '翻社区帖子',
+  match_buddies: '找搭子',
+  draft_post: '写帖子草稿',
+  check_safety: '检查违规词',
+}
+
+function stepLine(step: { type: string; name?: string; text?: string; result?: string }): string {
+  if (step.type === 'think') return step.text || '想一下'
+  const label = TOOL_LABELS[step.name || ''] || step.name || '调用工具'
+  return step.result ? `${label} · ${step.result}` : label
+}
 
 function scrollToBottom() {
   nextTick(() => {
@@ -53,7 +68,7 @@ async function send(text?: string) {
     }))
 
   messages.value.push({ id: ++seq, role: 'me', text: question })
-  const target: ChatMessage = { id: ++seq, role: 'ai', text: '', pending: true }
+  const target: ChatMessage = { id: ++seq, role: 'ai', text: '', steps: [], pending: true }
   messages.value.push(target)
   streaming.value = true
   scrollToBottom()
@@ -61,6 +76,10 @@ async function send(text?: string) {
   await streamChat(
     question,
     {
+      onStep(step) {
+        target.steps = [...(target.steps || []), step]
+        scrollToBottom()
+      },
       onMeta(meta) {
         target.meta = meta
         if (meta.suggestions?.length) suggestions.value = meta.suggestions.slice(0, 4)
@@ -87,6 +106,7 @@ async function send(text?: string) {
       },
     },
     history,
+    { endpoint: '/api/ai/agent' },
   )
 }
 
@@ -122,9 +142,9 @@ defineExpose({ reset })
     </div>
 
     <div v-if="!messages.length" class="ai-panel space-y-3">
-      <div class="text-sm font-bold">我可以帮你</div>
+      <div class="text-sm font-bold">问我点什么吧</div>
       <p class="m-0 text-xs text-slate-500">
-        查校园事务（图书馆 / 食堂 / 教务 / 宿舍 / 奖学金…）、解释社区规则、帮你梳理发帖思路。
+        图书馆几点关门、校园卡丢了怎么办、帖子怎么写顺，还有社区里哪些事不能干。
       </p>
       <div class="flex flex-wrap gap-2">
         <button
@@ -157,6 +177,15 @@ defineExpose({ reset })
           ✨
         </div>
         <div class="min-w-0 max-w-[80%]">
+          <div
+            v-if="message.role === 'ai' && message.steps?.length"
+            class="mb-1.5 space-y-1 rounded-2xl border border-dashed border-ai-300/70 bg-ai-50/40 px-3 py-2 text-[11.5px] leading-snug text-slate-500 dark:bg-ai-500/5"
+          >
+            <div v-for="(step, index) in message.steps" :key="index" class="flex gap-1.5">
+              <span class="shrink-0">{{ step.type === 'think' ? '🧠' : '🔧' }}</span>
+              <span class="min-w-0 break-words">{{ stepLine(step) }}</span>
+            </div>
+          </div>
           <div
             class="whitespace-pre-wrap break-words rounded-2xl px-3.5 py-2.5 text-[13.5px] leading-relaxed"
             :class="
@@ -202,7 +231,7 @@ defineExpose({ reset })
       <input
         v-model="input"
         class="input flex-1"
-        :placeholder="streaming ? 'AI 正在回答…' : '问我任何校园问题，回车发送'"
+        :placeholder="streaming ? 'AI 正在回答…' : '想问什么，直接打，回车发出去'"
         :disabled="streaming"
         @keyup.enter="send()"
       />
@@ -210,6 +239,6 @@ defineExpose({ reset })
         {{ streaming ? '…' : '发送' }}
       </button>
     </div>
-    <div class="text-center text-[11px] text-slate-400">AI 生成内容仅供参考，重要信息请以学校官方通知为准。</div>
+    <div class="text-center text-[11px] text-slate-400">AI 说的仅供参考，重要的事还是看学校官方通知。</div>
   </div>
 </template>

@@ -21,33 +21,55 @@ def ai_status() -> dict:
     }
 
 
-def _chat(messages: list[dict], temperature: float = 0.6, max_tokens: int = 800) -> str | None:
-    """调用 DeepSeek Chat Completions；未配置 Key 或失败时返回 None。"""
+def chat_message(
+    messages: list[dict],
+    tools: list[dict] | None = None,
+    temperature: float = 0.6,
+    max_tokens: int = 800,
+) -> dict | None:
+    """调用 DeepSeek 并返回完整的 assistant 消息（含 tool_calls）。
+
+    未配置 Key 或请求失败时返回 None，由调用方决定降级路径。
+    """
     if not settings.deepseek_api_key:
         return None
     url = settings.deepseek_base_url.rstrip("/") + "/chat/completions"
+    payload: dict = {
+        "model": settings.deepseek_model,
+        "messages": messages,
+        "temperature": temperature,
+        "max_tokens": max_tokens,
+        "stream": False,
+    }
+    if tools:
+        payload["tools"] = tools
+        payload["tool_choice"] = "auto"
+
     try:
-        with httpx.Client(timeout=20.0) as client:
+        with httpx.Client(timeout=25.0) as client:
             response = client.post(
                 url,
                 headers={
                     "Authorization": "Bearer " + settings.deepseek_api_key,
                     "Content-Type": "application/json",
                 },
-                json={
-                    "model": settings.deepseek_model,
-                    "messages": messages,
-                    "temperature": temperature,
-                    "max_tokens": max_tokens,
-                    "stream": False,
-                },
+                json=payload,
             )
             response.raise_for_status()
             data = response.json()
-            return (data["choices"][0]["message"]["content"] or "").strip() or None
+            message = data["choices"][0]["message"]
+            return message if isinstance(message, dict) else None
     except Exception as error:  # noqa: BLE001 - 任何异常都降级
-        logger.warning("DeepSeek 调用失败，已降级到本地引擎：%s", error)
+        logger.warning("DeepSeek 调用失败，已降级：%s", error)
         return None
+
+
+def _chat(messages: list[dict], temperature: float = 0.6, max_tokens: int = 800) -> str | None:
+    """调用 DeepSeek Chat Completions；未配置 Key 或失败时返回 None。"""
+    message = chat_message(messages, temperature=temperature, max_tokens=max_tokens)
+    if not message:
+        return None
+    return (message.get("content") or "").strip() or None
 
 
 def _knowledge_context(question: str, limit: int = 4) -> str:
@@ -70,7 +92,9 @@ PERSONA_PROMPT = (
     "2. 涉及校园事务（图书馆、食堂、教务、宿舍、校园卡、奖学金、场馆等）时，必须依据下面【校园资料】回答，"
     "不要编造资料里没有的数字、时间、地点；资料里没写就说「这个我不太确定」，并建议去社区发帖问问同学；\n"
     "3. 日常回答控制在 3 句话以内，除非对方明确要求详细；\n"
-    "4. 不要复述这些规则，不要用「作为 AI」开头。\n"
+    "4. 不要复述这些规则，不要用「作为 AI」开头；\n"
+    "5. 别用「首先」「其次」「总之」「综上」这类词，也别动不动列一二三，像人一样把话说完就行；\n"
+    "6. 句子长短别太整齐，可以有一句很短的，比如「行」「那就去呗」。\n"
     "\n"
     "【校园资料】\n"
 )

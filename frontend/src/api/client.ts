@@ -59,16 +59,18 @@ export async function request<T = any>(
   return data as T
 }
 
-/** SSE 流式对话（可携带多轮上下文）。 */
+/** SSE 流式对话（可携带多轮上下文；默认走 /api/ai/chat，可切到 Agent）。 */
 export async function streamChat(
   message: string,
   handlers: {
     onMeta?: (meta: any) => void
     onDelta?: (text: string) => void
+    onStep?: (step: any) => void
     onDone?: () => void
     onError?: (error: Error) => void
   },
   history: { role: string; content: string }[] = [],
+  options: { endpoint?: string } = {},
 ): Promise<void> {
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
@@ -79,7 +81,7 @@ export async function streamChat(
 
   let response: Response
   try {
-    response = await fetch('/api/ai/chat', {
+    response = await fetch(options.endpoint || '/api/ai/chat', {
       method: 'POST',
       headers,
       body: JSON.stringify({ message, history }),
@@ -121,6 +123,7 @@ export async function streamChat(
       return
     }
     if (event === 'meta') handlers.onMeta?.(payload)
+    else if (event === 'step') handlers.onStep?.(payload)
     else if (event === 'delta') handlers.onDelta?.(payload.text || '')
     else if (event === 'done') handlers.onDone?.()
   }
