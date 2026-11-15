@@ -1,38 +1,83 @@
 @echo off
-chcp 65001 >nul
+chcp 936 >nul
 cd /d "%~dp0"
-setlocal
+setlocal enabledelayedexpansion
 
 echo ============================================
-echo   AIæ ¡å›­ç¤¾åŒº  ä¸€é”®å¯åŠ¨
-echo   åŽç«¯ FastAPI :8000   å‰ç«¯ Vite :5173
+echo   AIÐ£Ô°ÉçÇø  Ò»¼üÆô¶¯
+echo   ºó¶Ë http://127.0.0.1:8000   Ç°¶Ë http://127.0.0.1:5173
 echo ============================================
 echo.
 
-if not exist "%~dp0backend\.venv\Scripts\python.exe" (
-  echo [X] æœªæ‰¾åˆ° Python è™šæ‹ŸçŽ¯å¢ƒï¼Œè¯·å…ˆåŒå‡»ã€Œä¸€é”®å®‰è£….cmdã€
+if not exist "backend\.venv\Scripts\python.exe" goto NOT_READY
+if not exist "frontend\node_modules" goto NOT_READY
+
+powershell -NoProfile -Command "if(Get-NetTCPConnection -State Listen -LocalPort 8000 -ErrorAction SilentlyContinue){exit 1}else{exit 0}" >nul 2>nul
+if errorlevel 1 (
+  echo [X] 8000 ¶Ë¿Ú±»Õ¼ÁË£¬ÏÈ°ÑÕ¼ÓÃµÄ³ÌÐò¹ØµôÔÙÆô¶¯
   pause
   exit /b 1
 )
-if not exist "%~dp0frontend\node_modules" (
-  echo [X] æœªæ‰¾åˆ°å‰ç«¯ä¾èµ–ï¼Œè¯·å…ˆåŒå‡»ã€Œä¸€é”®å®‰è£….cmdã€
+powershell -NoProfile -Command "if(Get-NetTCPConnection -State Listen -LocalPort 5173 -ErrorAction SilentlyContinue){exit 1}else{exit 0}" >nul 2>nul
+if errorlevel 1 (
+  echo [X] 5173 ¶Ë¿Ú±»Õ¼ÁË£¬ÏÈ°ÑÕ¼ÓÃµÄ³ÌÐò¹ØµôÔÙÆô¶¯
   pause
   exit /b 1
 )
 
-echo [1/3] å¯åŠ¨åŽç«¯ FastAPI ...
-start "AIæ ¡å›­ç¤¾åŒº-åŽç«¯" /D "%~dp0backend" cmd /k ".venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8000"
+echo [1/3] Æðºó¶Ë ...
+start "AIÐ£Ô°ÉçÇø-ºó¶Ë" /D "%~dp0backend" cmd /k ".venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8000"
 
-echo [2/3] å¯åŠ¨å‰ç«¯ Vite ...
-start "AIæ ¡å›­ç¤¾åŒº-å‰ç«¯" /D "%~dp0frontend" cmd /k "npm run dev"
+echo [2/3] µÈºó¶Ë¾ÍÐ÷ ...
+set READY=0
+for /l %%i in (1,1,45) do (
+  if "!READY!"=="0" (
+    powershell -NoProfile -Command "try{$r=Invoke-WebRequest http://127.0.0.1:8000/api/health -UseBasicParsing -TimeoutSec 2; if($r.StatusCode -eq 200){exit 0}}catch{}; exit 1" >nul 2>nul
+    if errorlevel 1 (
+      timeout /t 1 /nobreak >nul
+    ) else (
+      set READY=1
+    )
+  )
+)
+if "!READY!"=="0" (
+  echo [X] ºó¶ËÃ»ÆðÀ´£¬¿´¿´¡¸AIÐ£Ô°ÉçÇø-ºó¶Ë¡¹ÄÇ¸ö´°¿ÚµÄ±¨´í
+  pause
+  exit /b 1
+)
+echo     ºó¶Ë OK
 
-echo [3/3] ç­‰å¾…æœåŠ¡å°±ç»ª ...
-timeout /t 8 /nobreak >nul
+echo [3/3] ÆðÇ°¶Ë ...
+start "AIÐ£Ô°ÉçÇø-Ç°¶Ë" /D "%~dp0frontend" cmd /k "npm run dev"
+
+set WEB=0
+for /l %%i in (1,1,45) do (
+  if "!WEB!"=="0" (
+    powershell -NoProfile -Command "try{$r=Invoke-WebRequest http://127.0.0.1:5173 -UseBasicParsing -TimeoutSec 2; if($r.StatusCode -eq 200){exit 0}}catch{}; exit 1" >nul 2>nul
+    if errorlevel 1 (
+      timeout /t 1 /nobreak >nul
+    ) else (
+      set WEB=1
+    )
+  )
+)
+if "!WEB!"=="0" (
+  echo [X] Ç°¶ËÃ»ÆðÀ´£¬¿´¿´¡¸AIÐ£Ô°ÉçÇø-Ç°¶Ë¡¹ÄÇ¸ö´°¿Ú
+  pause
+  exit /b 1
+)
+
 start "" http://127.0.0.1:5173
-
 echo.
-echo åŽç«¯æ–‡æ¡£ï¼šhttp://127.0.0.1:8000/docs
-echo å‰ç«¯é¡µé¢ï¼šhttp://127.0.0.1:5173
-echo å…³é—­ã€ŒAIæ ¡å›­ç¤¾åŒº-åŽç«¯ã€å’Œã€ŒAIæ ¡å›­ç¤¾åŒº-å‰ç«¯ã€ä¸¤ä¸ªçª—å£å³å¯åœæ­¢æœåŠ¡ã€‚
-echo.
+echo ¶¼ÆðÀ´ÁË£º
+echo   Ç°¶Ë     http://127.0.0.1:5173
+echo   ½Ó¿ÚÎÄµµ http://127.0.0.1:8000/docs
+echo   ÑÝÊ¾ÕËºÅ linxiaoman / 123456
+echo ¹ØµôÄÇÁ½¸öºÚ´°¿Ú¾ÍÍ£ÁË¡£
 pause
+exit /b 0
+
+:NOT_READY
+echo [X] »¹Ã»×°ºÃ£¬ÏÈË«»÷¡¸Ò»¼ü°²×°.cmd¡¹
+pause
+exit /b 1

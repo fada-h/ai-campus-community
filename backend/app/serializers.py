@@ -54,9 +54,9 @@ def post_out(post: Post, db: Session, current_user: User | None = None) -> dict:
                 PostLike.post_id == post.id, PostLike.user_id == current_user.id
             )
         ) is not None
-    heat = round(
-        like_count * 6 + comment_count * 4 + post.views * 0.3 - _age_hours(post.created_at) * 0.8
-    )
+    # 互动量按时间衰减：新帖权重高，老帖慢慢沉下去，但不出现负数
+    base = like_count * 6 + comment_count * 4 + post.views * 0.3
+    heat = round(base / (1 + _age_hours(post.created_at) / 48))
     author = db.get(User, post.author_id)
     return {
         "id": post.id,

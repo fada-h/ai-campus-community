@@ -32,6 +32,8 @@ async def lifespan(_app: FastAPI):
         if seed_if_empty(db):
             logger.info("已写入演示数据（8 位用户 / 14 篇帖子）")
     logger.info("数据库：%s", "SQLite" if settings.is_sqlite else "MySQL")
+    if settings.db_note:
+        logger.warning(settings.db_note)
     yield
 
 
@@ -61,6 +63,7 @@ def health():
         "app": settings.app_name,
         "environment": settings.environment,
         "database": "sqlite" if settings.is_sqlite else "mysql",
+        "note": settings.db_note,
     }
 
 

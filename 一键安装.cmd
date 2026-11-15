@@ -1,58 +1,80 @@
 @echo off
-chcp 65001 >nul
+chcp 936 >nul
 cd /d "%~dp0"
-setlocal
+setlocal enabledelayedexpansion
 
 echo ============================================
-echo   AIæ ¡å›­ç¤¾åŒº  ä¸€é”®å®‰è£…
+echo   AIĞ£Ô°ÉçÇø  Ò»¼ü°²×°
+echo   ºó¶Ë FastAPI  +  Ç°¶Ë Vue 3 / Vite
 echo ============================================
 echo.
 
 where python >nul 2>nul
 if errorlevel 1 (
-  echo [X] æœªæ£€æµ‹åˆ° pythonï¼Œè¯·å…ˆå®‰è£… Python 3.10+ å¹¶å‹¾é€‰ Add to PATH
+  echo [X] Ã»¼ì²âµ½ python£¬ÇëÏÈ×° Python 3.10+£¬°²×°Ê±¹´Ñ¡ Add to PATH
   pause
   exit /b 1
 )
 where npm >nul 2>nul
 if errorlevel 1 (
-  echo [X] æœªæ£€æµ‹åˆ° npmï¼Œè¯·å…ˆå®‰è£… Node.js 18+ å¹¶åŠ å…¥ PATH
+  echo [X] Ã»¼ì²âµ½ npm£¬ÇëÏÈ×° Node.js 18+£¬×°ÍêÖØ¿ªÕâ¸ö´°¿Ú
   pause
   exit /b 1
 )
 
-echo [1/3] åˆ›å»º Python è™šæ‹Ÿç¯å¢ƒå¹¶å®‰è£…åç«¯ä¾èµ–...
+echo [1/4] ½¨ĞéÄâ»·¾³¡¢×°ºó¶ËÒÀÀµ
 cd /d "%~dp0backend"
-if not exist ".venv\Scripts\python.exe" python -m venv .venv
-".venv\Scripts\python.exe" -m pip install --upgrade pip
-".venv\Scripts\python.exe" -m pip install -r requirements.txt
+if not exist ".venv\Scripts\python.exe" (
+  python -m venv .venv
+  if errorlevel 1 (
+    echo [X] ĞéÄâ»·¾³´´½¨Ê§°Ü£¬¼ì²éÒ»ÏÂ Python ÊÇ·ñÍêÕû
+    pause
+    exit /b 1
+  )
+)
+".venv\Scripts\python.exe" -m pip install --upgrade pip -q
+".venv\Scripts\python.exe" -m pip install -r requirements.txt -q
 if errorlevel 1 (
-  echo [X] åç«¯ä¾èµ–å®‰è£…å¤±è´¥ï¼Œè¯·æ£€æŸ¥ç½‘ç»œæˆ– Python ç‰ˆæœ¬ï¼ˆå»ºè®® 3.11ï¼‰
-  pause
-  exit /b 1
+  echo     Ö±Á¬ÓĞµãÂı£¬»»Çå»ª¾µÏñÔÙÊÔÒ»´Î...
+  ".venv\Scripts\python.exe" -m pip install -r requirements.txt -q -i https://pypi.tuna.tsinghua.edu.cn/simple
+  if errorlevel 1 (
+    echo [X] ºó¶ËÒÀÀµ×°²»ÉÏ£¬¼ì²éÍøÂç£¬»òÊÖ¶¯Ö´ĞĞ backend\requirements.txt ÀïµÄ°²×°
+    pause
+    exit /b 1
+  )
 )
 
-echo.
-echo [2/3] å®‰è£…å‰ç«¯ä¾èµ–...
+echo [2/4] ×¼±¸»·¾³±äÁ¿
+if not exist ".env" (
+  copy ".env.example" ".env" >nul
+  echo     ÒÑÉú³É backend\.env£¨Ä¬ÈÏ SQLite£¬²»ÓÃ×° MySQL Ò²ÄÜÅÜ£©
+)
+
+echo [3/4] ×°Ç°¶ËÒÀÀµ
 cd /d "%~dp0frontend"
-call npm install
-if errorlevel 1 (
-  echo [X] å‰ç«¯ä¾èµ–å®‰è£…å¤±è´¥ï¼Œè¯·æ£€æŸ¥ Node.jsï¼ˆå»ºè®® 18+ï¼‰
-  pause
-  exit /b 1
+if not exist "node_modules" (
+  call npm install --no-audit --no-fund
+  if errorlevel 1 (
+    echo     »»³É¹úÄÚ¾µÏñÔÙÊÔÒ»´Î...
+    call npm install --no-audit --no-fund --registry=https://registry.npmmirror.com
+    if errorlevel 1 (
+      echo [X] Ç°¶ËÒÀÀµ×°²»ÉÏ£¬¼ì²éÍøÂç»ò Node.js °æ±¾£¨½¨Òé 18+£©
+      pause
+      exit /b 1
+    )
+  )
 )
 
-echo.
-echo [3/3] åˆå§‹åŒ–æ•°æ®åº“ï¼ˆå»ºåº“ + å»ºè¡¨ + æ¼”ç¤ºæ•°æ®ï¼‰...
+echo [4/4] ½¨±í + Ğ´ÑİÊ¾Êı¾İ
 cd /d "%~dp0backend"
 ".venv\Scripts\python.exe" scripts\init_db.py
 if errorlevel 1 (
-  echo [X] æ•°æ®åº“åˆå§‹åŒ–å¤±è´¥ï¼Œè¯·æ£€æŸ¥ backend\.env ä¸­çš„ MySQL é…ç½®
+  echo [X] Êı¾İ¿â³õÊ¼»¯Ê§°Ü£¬¿´ÏÂÉÏÃæÄÇĞĞ±¨´í
   pause
   exit /b 1
 )
 
 cd /d "%~dp0"
 echo.
-echo å®‰è£…å®Œæˆã€‚åŒå‡»ã€Œå¯åŠ¨.cmdã€å³å¯è¿è¡Œã€‚
+echo ×°ºÃÁË¡£Ë«»÷¡¸Æô¶¯.cmd¡¹¾ÍÄÜÅÜ¡£
 pause

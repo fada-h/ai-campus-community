@@ -2,44 +2,25 @@
 
 用法：
     python scripts/init_db.py
+
+连接不上 MySQL 时会自动改用 backend/data/campus.db（SQLite），
+所以没有数据库环境也能把演示数据建好。
 """
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from sqlalchemy import create_engine, text  # noqa: E402
-
 from app.config import settings  # noqa: E402
 from app.db import SessionLocal, init_db  # noqa: E402
 from app.seed import seed_if_empty  # noqa: E402
 
 
-def ensure_database() -> None:
-    """MySQL 下先创建数据库（utf8mb4）；SQLite 无需处理。"""
-    if settings.is_sqlite:
-        print("[1/3] SQLite 模式，跳过建库")
-        return
-
-    from sqlalchemy.engine import make_url
-
-    url = make_url(settings.database_url)
-    database = url.database
-    server_url = url.set(database=None)
-    engine = create_engine(server_url, connect_args={"connect_timeout": 5})
-    with engine.begin() as connection:
-        connection.execute(
-            text(
-                f"CREATE DATABASE IF NOT EXISTS `{database}` "
-                "DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
-            )
-        )
-    engine.dispose()
-    print(f"[1/3] 数据库已就绪：{database}")
-
-
 def main() -> None:
-    ensure_database()
+    mode = "SQLite（本地文件）" if settings.is_sqlite else "MySQL"
+    print(f"[1/3] 数据库模式：{mode}")
+    if settings.db_note:
+        print(f"      {settings.db_note}")
 
     init_db()
     print("[2/3] 数据表已创建")

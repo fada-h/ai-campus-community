@@ -73,6 +73,8 @@ class Settings:
 
         self.database_url = _database_url()
         self.is_sqlite = self.database_url.startswith("sqlite")
+        # 由 app.db 在启动时填充：数据库降级等运行期说明
+        self.db_note = ""
 
         self.cors_origins = [
             item.strip()
@@ -86,7 +88,7 @@ class Settings:
         )
         self.deepseek_model = os.getenv("DEEPSEEK_MODEL", "deepseek-chat")
 
-        self.ai_disclaimer = "AI 生成内容仅供参考，重要信息请以学校官方通知为准"
+        self.ai_disclaimer = "AI 说的仅供参考，重要的事还是看学校官方通知。"
 
 
 settings = Settings()
