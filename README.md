@@ -11,6 +11,16 @@
 - 在线演示：`（部署后补）`
 - 演示账号：`linxiaoman / 123456`（管理员）　`zhouyihang / 123456`（普通用户）
 
+## 界面预览
+
+| 首页 | AI 助手（能看到工具轨迹） |
+|---|---|
+| ![首页](docs/screenshot-home.png) | ![AI 助手](docs/screenshot-ai.png) |
+
+| 私信 | 后台管理 |
+|---|---|
+| ![私信](docs/screenshot-messages.png) | ![后台](docs/screenshot-admin.png) |
+
 ---
 
 ## 一、选题：为什么是校园社区
