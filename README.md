@@ -4,6 +4,8 @@
 
 传智杯「AI Web 网页开发挑战赛」参赛作品 · 智慧校园方向。
 
+**GitHub 仓库**：<https://github.com/fada-h/ai-community-app>
+
 一个面向高校学生的 AI 校园社区：把「校园事务问答、发帖写作助手、搭子匹配」三种 AI 能力
 嵌进真实的社区场景，并配备私信与后台管理。
 
@@ -74,7 +76,7 @@ FastAPI（Python 3.10+）
 ### 目录结构
 
 ```
-E:\小肥鱼
+ai-community-app
 ├─ 启动.cmd                 # 一键启动前后端并打开浏览器
 ├─ 一键安装.cmd             # 安装依赖 + 初始化数据库
 ├─ backend/
@@ -105,6 +107,13 @@ E:\小肥鱼
 ---
 
 ## 四、快速开始
+
+从 GitHub 获取代码：
+
+```bash
+git clone https://github.com/fada-h/ai-community-app.git
+cd ai-community-app
+```
 
 ### 方式一：双击脚本（推荐）
 
