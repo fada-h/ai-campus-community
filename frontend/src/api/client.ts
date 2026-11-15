@@ -1,6 +1,6 @@
 /** 统一 API 客户端：token 注入、错误处理、SSE、WebSocket。 */
 
-const TOKEN_KEY = 'qinghe.token'
+const TOKEN_KEY = 'ai-campus.token'
 
 export function getToken(): string {
   try {

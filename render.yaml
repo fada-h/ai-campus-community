@@ -2,7 +2,7 @@
 # 用法：Render → New → Blueprint → 选择本仓库 → Apply
 services:
   - type: web
-    name: qinghe-campus
+    name: ai-campus
     runtime: docker
     plan: free
     region: singapore

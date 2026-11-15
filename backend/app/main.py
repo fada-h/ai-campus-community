@@ -1,4 +1,4 @@
-"""青禾 · AI 校园社区 —— FastAPI 入口。
+"""AI校园社区 —— FastAPI 入口。
 
 启动：
     uvicorn app.main:app --reload --port 8000
@@ -22,7 +22,7 @@ from .seed import seed_if_empty
 from .ws import router as ws_router
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
-logger = logging.getLogger("qinghe")
+logger = logging.getLogger("ai-campus")
 
 
 @asynccontextmanager
@@ -36,7 +36,7 @@ async def lifespan(_app: FastAPI):
 
 
 app = FastAPI(
-    title=settings.app_name + " · " + settings.app_subtitle,
+    title=" · ".join(x for x in (settings.app_name, settings.app_subtitle) if x),
     description="校园 AI 社区后端：AI 问答 / 发帖助手 / 搭子匹配 / 私信",
     version="2.0.0",
     lifespan=lifespan,

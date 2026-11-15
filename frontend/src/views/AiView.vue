@@ -50,7 +50,7 @@ onMounted(load)
             已连接 DeepSeek 云端模型，回答由大模型生成。
           </p>
           <p v-else class="text-slate-500">
-            正在使用「青禾本地引擎」：基于内置校园知识库的检索增强问答，无需联网即可运行。
+            正在使用「本地 AI 引擎」：基于内置校园知识库的检索增强问答，无需联网即可运行。
             在 backend/.env 配置 <code class="rounded bg-slate-100 px-1 dark:bg-slate-800">DEEPSEEK_API_KEY</code> 后会自动切换云端。
           </p>
         </section>

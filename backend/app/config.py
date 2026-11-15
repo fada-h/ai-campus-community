@@ -62,8 +62,8 @@ class Settings:
     """运行期配置，构造时一次性读取环境变量。"""
 
     def __init__(self) -> None:
-        self.app_name = os.getenv("APP_NAME", "青禾")
-        self.app_subtitle = os.getenv("APP_SUBTITLE", "AI 校园社区")
+        self.app_name = os.getenv("APP_NAME", "AI校园社区")
+        self.app_subtitle = os.getenv("APP_SUBTITLE", "")
         self.environment = os.getenv("ENV", "development")
         self.secret_key = _read_secret()
         self.algorithm = "HS256"

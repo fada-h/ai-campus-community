@@ -1,6 +1,6 @@
-# 青禾 · AI 校园社区 —— 单镜像部署（前端 dist + FastAPI 同源）
-# 构建：docker build -t qinghe .
-# 运行：docker run -p 8000:8000 -e DEEPSEEK_API_KEY=sk-xxx qinghe
+# AI校园社区 —— 单镜像部署（前端 dist + FastAPI 同源）
+# 构建：docker build -t ai-campus .
+# 运行：docker run -p 8000:8000 -e DEEPSEEK_API_KEY=sk-xxx ai-campus
 # 访问：http://localhost:8000
 
 # ---------- 1. 构建前端 ----------

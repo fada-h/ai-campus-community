@@ -1,9 +1,9 @@
 {
-  "name": "qinghe-frontend",
+  "name": "ai-campus-frontend",
   "private": true,
   "version": "2.0.0",
   "type": "module",
-  "description": "青禾 · AI 校园社区 前端（Vue 3 + Vite + TailwindCSS）",
+  "description": "AI校园社区 前端（Vue 3 + Vite + TailwindCSS）",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

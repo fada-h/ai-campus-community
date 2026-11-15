@@ -3,7 +3,7 @@ import { reactive } from 'vue'
 import { api, type User } from '@/api'
 import { getToken, setToken } from '@/api/client'
 
-const THEME_KEY = 'qinghe.theme'
+const THEME_KEY = 'ai-campus.theme'
 
 export const auth = reactive({
   user: null as User | null,

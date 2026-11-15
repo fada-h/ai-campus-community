@@ -112,7 +112,7 @@ def answer_question(question: str) -> dict:
 
     if re.match(r"^(你好|hi|hello|嗨|在吗)", text, re.I):
         return {
-            "answer": "你好呀，我是青禾 AI 助手 🌱 我可以帮你查校园事务、润色帖子、找搭子。想先了解点什么？",
+            "answer": "你好呀，我是 AI 助手 🌱 我可以帮你查校园事务、润色帖子、找搭子。想先了解点什么？",
             "sources": [],
             "confidence": 1.0,
             "kind": "greeting",
@@ -121,11 +121,11 @@ def answer_question(question: str) -> dict:
 
     if re.search(r"(你是谁|能做什么|有什么功能|介绍一下自己)", text):
         return {
-            "answer": "我是「青禾」——校园社区里的 AI 助手，主要有三种能力：\n"
+            "answer": "我是「AI校园社区」的 AI 助手，主要有三种能力：\n"
             "1) 校园事务问答：图书馆、食堂、教务、宿舍、奖学金等 26 类问题；\n"
             "2) 发帖助手：润色文字、推荐分类和标签、生成摘要、检测敏感内容；\n"
             "3) 搭子匹配：根据兴趣标签和描述，帮你找到同频的同学。",
-            "sources": ["青禾 AI 能力说明"],
+            "sources": ["AI 能力说明"],
             "confidence": 1.0,
             "kind": "capability",
             "suggestions": ["图书馆开放时间", "怎么申请奖学金", "帮我找考研搭子"],

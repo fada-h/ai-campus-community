@@ -112,7 +112,7 @@ defineExpose({ reset })
       <div class="flex items-center gap-2.5">
         <div class="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-ai-600 to-fuchsia-500 text-sm text-white">✨</div>
         <div>
-          <div class="text-sm font-bold">青禾 AI 助手</div>
+          <div class="text-sm font-bold">AI 助手</div>
           <div class="text-[11.5px] text-slate-400">
             {{ messages.length ? '正在对话' : '校园事务问答 · 断网也能用' }}
           </div>

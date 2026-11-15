@@ -23,7 +23,7 @@ const showFab = computed(() => route.name !== 'ai' && route.name !== 'login')
       class="fixed bottom-6 right-6 z-50 inline-flex h-12 items-center gap-2 rounded-full bg-gradient-to-br from-ai-600 to-fuchsia-500 px-5 text-sm font-bold text-white shadow-[0_12px_30px_rgba(124,58,237,.4)] transition hover:-translate-y-0.5"
       @click="router.push('/ai')"
     >
-      ✨ 问问青禾
+      ✨ 问问 AI 助手
     </button>
 
     <ToastHost />

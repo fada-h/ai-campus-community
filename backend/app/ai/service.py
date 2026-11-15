@@ -9,14 +9,14 @@ from ..config import settings
 from . import engine
 from .knowledge import CATEGORY_MAP, KNOWLEDGE
 
-logger = logging.getLogger("qinghe.ai")
+logger = logging.getLogger("ai-campus.ai")
 
 
 def ai_status() -> dict:
     available = bool(settings.deepseek_api_key)
     return {
         "mode": "cloud" if available else "local",
-        "provider": "DeepSeek" if available else "青禾本地引擎",
+        "provider": "DeepSeek" if available else "本地 AI 引擎",
         "model": settings.deepseek_model if available else "tf-idf",
     }
 
@@ -62,7 +62,7 @@ def _knowledge_context(question: str, limit: int = 4) -> str:
 
 
 PERSONA_PROMPT = (
-    "你是「青禾」，一个校园社区里的 AI 助手，性格像一个热心的学长/学姐。\n"
+    "你是「AI校园社区」的 AI 助手，性格像一个热心的学长/学姐。\n"
     "说话自然、口语化、简短，可以用「哈」「～」这类轻声词，但别油腻，也别刻意卖萌。\n"
     "\n"
     "规则：\n"

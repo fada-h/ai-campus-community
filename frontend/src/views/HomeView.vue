@@ -83,7 +83,7 @@ watch(sort, load)
         </nav>
         <button class="btn btn-primary w-full" @click="openComposer">✍️ 发布帖子</button>
         <div class="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
-          <div class="mb-1.5 text-xs font-bold">🌱 关于青禾</div>
+          <div class="mb-1.5 text-xs font-bold">🌱 关于 AI校园社区</div>
           <p class="text-[12px] leading-relaxed text-slate-500">
             一个更懂你的校园社区。AI 帮你查事务、润色文字、找同频的同学，但不会替你发言。
           </p>
@@ -99,10 +99,10 @@ watch(sort, load)
             让每一次校园连接，<br />都被 AI 温柔接住。
           </h1>
           <p class="mt-2 max-w-lg text-sm text-brand-100/80">
-            青禾把「校园问答、发帖助手、搭子匹配」放进同一个社区。你不用再翻十个群，也不必独自摸索。
+            AI校园社区把「校园问答、发帖助手、搭子匹配」放进同一个社区。你不用再翻十个群，也不必独自摸索。
           </p>
           <div class="mt-5 flex flex-wrap gap-2.5">
-            <button class="btn btn-ai" @click="router.push('/ai')">✨ 问问青禾 AI</button>
+            <button class="btn btn-ai" @click="router.push('/ai')">✨ 问问 AI 助手</button>
             <button class="btn border-white/25 bg-white/10 text-white hover:bg-white/20" @click="openComposer">
               ✍️ 发一条帖子
             </button>
@@ -188,7 +188,7 @@ watch(sort, load)
         </section>
 
         <section class="ai-panel space-y-2">
-          <div class="flex items-center gap-2 text-sm font-bold"><span class="h-2 w-2 rounded-full bg-ai-500" /> 青禾 AI</div>
+          <div class="flex items-center gap-2 text-sm font-bold"><span class="h-2 w-2 rounded-full bg-ai-500" /> AI 助手</div>
           <p class="m-0 text-xs text-slate-500">校园事务问答、帖子润色、搭子匹配，一处搞定。</p>
           <button class="btn btn-sm btn-ai" @click="router.push('/ai')">和 AI 聊聊 →</button>
         </section>

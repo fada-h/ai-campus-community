@@ -28,7 +28,7 @@ async function submit() {
         password: form.password,
         nickname: form.nickname.trim() || form.username.trim(),
       })
-      toast('注册成功，欢迎加入青禾')
+      toast('注册成功，欢迎加入 AI校园社区')
     }
     const redirect = (route.query.redirect as string) || '/'
     router.push(redirect)
@@ -51,7 +51,7 @@ function useDemo() {
     <section v-if="!auth.user" class="card space-y-4 p-7">
       <div class="text-center">
         <div class="mx-auto mb-2 grid h-11 w-11 place-items-center rounded-xl bg-gradient-to-br from-brand-700 to-brand-500 text-xl text-white">🌱</div>
-        <h1 class="text-xl font-extrabold tracking-tight">欢迎来到青禾</h1>
+        <h1 class="text-xl font-extrabold tracking-tight">欢迎来到 AI校园社区</h1>
         <p class="text-xs text-slate-400">一个更懂你的 AI 校园社区</p>
       </div>
 

@@ -44,10 +44,7 @@ function signOut() {
           class="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-brand-700 to-brand-500 text-lg text-white shadow-[0_6px_16px_rgba(15,118,110,.35)]"
           >🌱</span
         >
-        <span class="leading-tight">
-          <span class="block text-[17px] font-extrabold tracking-tight">青禾</span>
-          <span class="block text-[11px] font-semibold tracking-widest text-slate-400">AI 校园社区</span>
-        </span>
+        <span class="text-[17px] font-extrabold tracking-tight">AI校园社区</span>
       </a>
 
       <div class="relative hidden max-w-[420px] flex-1 sm:block">

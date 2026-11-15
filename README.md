@@ -1,4 +1,4 @@
-# 青禾 · AI 校园社区
+# AI校园社区
 
 > 让每一次校园连接，都被 AI 温柔接住。
 
@@ -183,8 +183,8 @@ DEEPSEEK_MODEL=deepseek-chat
 **本地 Docker 验证**
 
 ```bash
-docker build -t qinghe .
-docker run -p 8000:8000 -e DEEPSEEK_API_KEY=sk-xxx qinghe
+docker build -t ai-campus .
+docker run -p 8000:8000 -e DEEPSEEK_API_KEY=sk-xxx ai-campus
 # 打开 http://127.0.0.1:8000
 ```
 
