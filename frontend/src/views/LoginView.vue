@@ -52,7 +52,7 @@ function useDemo() {
       <div class="text-center">
         <div class="mx-auto mb-2 grid h-11 w-11 place-items-center rounded-xl bg-gradient-to-br from-brand-700 to-brand-500 text-xl text-white">🌱</div>
         <h1 class="text-xl font-extrabold tracking-tight">欢迎来到 AI校园社区</h1>
-        <p class="text-xs text-slate-400">一个更懂你的 AI 校园社区</p>
+        <p class="text-xs text-slate-400">校园里的事，少翻几个群。</p>
       </div>
 
       <div class="flex justify-center gap-2">

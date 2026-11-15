@@ -31,7 +31,7 @@ const tagList = computed(() =>
 
 async function runAi() {
   if (form.content.trim().length < 5) {
-    toast('先写几句正文，AI 才有素材哦', 'err')
+    toast('先写两句吧，AI 才有东西可改', 'err')
     return
   }
   aiLoading.value = true
@@ -53,7 +53,7 @@ function applyAi() {
   if (aiResult.value.category) form.category = aiResult.value.category
   if (aiResult.value.tags?.length) form.tags = aiResult.value.tags.join('，')
   aiResult.value = null
-  toast('已应用 AI 建议，你可以继续修改')
+  toast('应用好了，还能接着改')
 }
 
 async function publish() {
@@ -104,7 +104,7 @@ async function publish() {
       <div class="flex items-center gap-3 border-b border-slate-200 px-6 py-4 dark:border-slate-800">
         <div class="flex-1">
           <div class="text-[15px] font-bold">✍️ 发布帖子</div>
-          <div class="text-xs text-slate-400">真实表达最重要，AI 只是帮你把话说得更清楚</div>
+          <div class="text-xs text-slate-400">你写你的，AI 只帮你把话说顺</div>
         </div>
         <button class="btn btn-ghost btn-sm h-8 w-8 px-0" @click="emit('close')">✕</button>
       </div>
@@ -121,7 +121,7 @@ async function publish() {
             v-model="form.content"
             class="input min-h-[120px] resize-y leading-relaxed"
             maxlength="4000"
-            placeholder="例如：想找一起自习的同学，时间地点、对搭子的期待…"
+            placeholder="随便写，想到哪写到哪。时间、地点、想找什么样的人，越具体越好。"
           />
           <div class="flex items-center justify-between">
             <span class="hint">{{ form.content.length }} / 4000</span>

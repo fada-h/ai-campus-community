@@ -118,7 +118,7 @@ function fmt(iso: string) {
         <div class="border-b border-slate-200 px-4 py-3 text-sm font-bold dark:border-slate-800">💬 会话</div>
         <div v-if="loading" class="p-4"><div class="skeleton h-10" /></div>
         <div v-else-if="!conversations.length" class="p-6 text-center text-xs text-slate-400">
-          还没有会话，去别人的主页或帖子里发起聊天吧
+          还没跟谁聊过，去别人主页点一下就能聊。
         </div>
         <ul v-else>
           <li
@@ -151,7 +151,7 @@ function fmt(iso: string) {
 
         <div v-if="!activePeer" class="flex flex-1 flex-col items-center justify-center gap-2 text-slate-400">
           <div class="text-3xl">💬</div>
-          <p class="text-sm">选择一个会话开始聊天</p>
+          <p class="text-sm">左边挑个人开始聊</p>
         </div>
 
         <template v-else>

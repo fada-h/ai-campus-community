@@ -150,7 +150,7 @@ watch(() => route.params.id, load)
 
         <div v-if="!comments.length" class="flex flex-col items-center gap-1 py-8 text-slate-400">
           <div class="text-2xl">🌿</div>
-          <p class="text-sm">还没有评论，来做第一个回应的人</p>
+          <p class="text-sm">还没人说话，你先来</p>
         </div>
 
         <div v-for="comment in comments" :key="comment.id" class="flex gap-3 border-b border-slate-100 py-3.5 last:border-0 dark:border-slate-800">

@@ -99,11 +99,22 @@ for _doc in _DOCS:
 
 
 # ---------------- 1. 校园问答 ----------------
+# 短句闲聊：不查知识库，也别硬拉回校园话题
+CHAT_PATTERNS = [
+    (r"(谢谢|多谢|感谢|thx|thanks)", "不客气，还有事随时问。"),
+    (r"(累|烦|emo|难受|焦虑|压力|崩溃|不开心)", "听着今天不太好过。要不先把手上的事放一放，去操场走两圈？"
+     "实在扛不住，心理中心在大学生活动中心 3 楼，免费，也保密。"),
+    (r"(晚安|先睡|睡了)", "晚安，早点睡，明天的事明天再说。"),
+    (r"(哈哈|笑死|太绝了|离谱)", "哈哈，那确实。还有别的想问的吗？"),
+    (r"(你真|好厉害|牛啊|太强了)", "过奖了，我就是记性好一点。"),
+]
+
+
 def answer_question(question: str) -> dict:
     text = str(question or "").strip()
     if not text:
         return {
-            "answer": "把你想问的事情告诉我吧，比如“图书馆几点关门？”“校园卡丢了怎么办？”",
+            "answer": "想问什么直接说就行。图书馆几点关门、校园卡丢了怎么办，这种都问我。",
             "sources": [],
             "confidence": 0.0,
             "kind": "empty",
@@ -112,7 +123,7 @@ def answer_question(question: str) -> dict:
 
     if re.match(r"^(你好|hi|hello|嗨|在吗)", text, re.I):
         return {
-            "answer": "你好呀，我是 AI 助手 🌱 我可以帮你查校园事务、润色帖子、找搭子。想先了解点什么？",
+            "answer": "在的。校园里的事、帖子怎么写顺、想找搭子，都能问我。你先说，我听着。",
             "sources": [],
             "confidence": 1.0,
             "kind": "greeting",
@@ -121,15 +132,27 @@ def answer_question(question: str) -> dict:
 
     if re.search(r"(你是谁|能做什么|有什么功能|介绍一下自己)", text):
         return {
-            "answer": "我是「AI校园社区」的 AI 助手，主要有三种能力：\n"
-            "1) 校园事务问答：图书馆、食堂、教务、宿舍、奖学金等 26 类问题；\n"
-            "2) 发帖助手：润色文字、推荐分类和标签、生成摘要、检测敏感内容；\n"
-            "3) 搭子匹配：根据兴趣标签和描述，帮你找到同频的同学。",
+            "answer": "我是这个社区的 AI 助手，平时干三件事：\n"
+            "查校园里的事，图书馆、食堂、教务、宿舍、奖学金这些，大概 26 类；\n"
+            "帮你改帖子，起标题、挑分类和标签、看看有没有说不得的词；\n"
+            "按兴趣给你找搭子，匹配理由我也会写清楚。\n"
+            "不用联网也能用，就是答得没那么灵活。",
             "sources": ["AI 能力说明"],
             "confidence": 1.0,
             "kind": "capability",
             "suggestions": ["图书馆开放时间", "怎么申请奖学金", "帮我找考研搭子"],
         }
+
+    if len(text) <= 12:
+        for pattern, reply in CHAT_PATTERNS:
+            if re.search(pattern, text, re.I):
+                return {
+                    "answer": reply,
+                    "sources": [],
+                    "confidence": 0.9,
+                    "kind": "chat",
+                    "suggestions": ["图书馆几点关门？", "校园卡丢了怎么办？", "帮我找一起自习的搭子"],
+                }
 
     query = _vector(tokenize(text), _Idf)
     ranked = sorted(
@@ -141,8 +164,8 @@ def answer_question(question: str) -> dict:
 
     if best_score < 0.06:
         return {
-            "answer": "这个问题我暂时没有在校园知识库里找到可靠答案。你可以换个说法，或者直接问辅导员；"
-            "也可以把问题发到社区「学习互助」板块，让同学帮你。",
+            "answer": "这个我还真不确定，知识库里没写。你换个说法再问一次？"
+            "或者直接发到「学习互助」板块，同学比我靠谱。",
             "sources": [],
             "confidence": round(best_score, 3),
             "kind": "no-answer",
@@ -225,9 +248,9 @@ def safety_check(text: str) -> dict:
         "safe": not hits,
         "hits": hits,
         "message": (
-            "检测到可能违反社区规范的内容：" + "、".join(hits) + "。请修改后再发布。"
+            "「" + "」「".join(hits) + "」这种词社区不让发，改一下再发哈。"
             if hits
-            else "未发现明显违规内容，可以放心发布。"
+            else "没看出什么问题，发吧。"
         ),
     }
 
@@ -247,15 +270,15 @@ def polish_content(text: str) -> dict:
     trimmed = raw.strip()
 
     if len(trimmed) < 20:
-        issues.append("内容偏短，建议补充背景信息，方便同学理解。")
+        issues.append("太短了，补两句背景，不然别人看不明白。")
     if trimmed and not re.search(r"[。！？!?…]$", trimmed):
-        issues.append("结尾缺少标点，已补全句号。")
+        issues.append("结尾没标点，给你补了个句号。")
     if re.match(r"^[^。！？!?\n]{80,}$", trimmed):
-        issues.append("整段太长，已按语义拆分为多段。")
+        issues.append("一整段太长了，按句子拆成了几段，好读一点。")
     if re.search(r"(.)\1{3,}", trimmed):
-        issues.append("存在连续重复字符，已压缩为一次。")
+        issues.append("有几个字连着重复，删到只剩一个了。")
     if re.search(r"[\u0000-\u0008\u000b\u000c\u000e-\u001f]", raw):
-        issues.append("包含不可见控制字符，已清理。")
+        issues.append("里面混了看不见的控制字符，清掉了。")
 
     text2 = re.sub(r"[\u0000-\u0008\u000b\u000c\u000e-\u001f]", "", raw)
     text2 = re.sub(r"\s+", " ", text2).strip()
@@ -287,11 +310,11 @@ def writing_assistant(text: str) -> dict:
 
     tips: list[str] = []
     if len(tags) < 2:
-        tips.append("建议补充更具体的关键词（如课程名、地点、时间），方便被搜到。")
+        tips.append("标签少了点，补上课程名、地点、时间，别人更容易搜到你。")
     if not safety["safe"]:
-        tips.append("请删除违规词后再发布。")
+        tips.append("违规词删了再发。")
     if not polished["issues"]:
-        tips.append("文字表达清晰，可以直接发布。")
+        tips.append("读着挺顺的，直接发就行。")
 
     return {
         "title": suggest_title(polished["content"]) or suggest_title(text),
@@ -343,23 +366,23 @@ def match_buddies(me: dict, users: list[dict]) -> dict:
     if not results:
         return {
             "matches": [],
-            "message": "暂时没有找到兴趣高度重合的同学。试试在个人资料里多填几个标签"
-            "（如“考研”“摄影”“羽毛球”），匹配会更准。",
+            "message": "没找到太合适的。简介和标签再补几个吧，「考研」「摄影」这种具体的词，"
+            "匹配起来准一些。",
         }
 
     matches = []
     for item in results:
         reasons = []
         if item["common"]:
-            reasons.append("你们都喜欢「" + "」「".join(item["common"]) + "」")
+            reasons.append("你俩都爱「" + "」「".join(item["common"]) + "」")
         if item["user"].get("major") and me.get("major") and item["user"]["major"] == me["major"]:
-            reasons.append("同专业，课程节奏相近")
+            reasons.append("同一个专业，课表都差不多")
         if item["score"] > 0.5:
-            reasons.append("兴趣重合度很高，容易聊到一起")
+            reasons.append("兴趣重合挺多的，估计聊两句就熟")
         elif item["score"] > 0.2:
-            reasons.append("有不少共同话题，值得认识一下")
+            reasons.append("共同话题不少，可以认识一下")
         else:
-            reasons.append("兴趣有一定交集，可以先从校园话题聊起")
+            reasons.append("有点交集，从学校的事聊起就行")
         matches.append(
             {
                 "user": item["user"],
@@ -370,7 +393,7 @@ def match_buddies(me: dict, users: list[dict]) -> dict:
 
     return {
         "matches": matches,
-        "message": "根据兴趣标签与自我介绍，为你挑出了 " + str(len(matches)) + " 位同频同学。",
+        "message": "按标签和简介挑的，就 " + str(len(matches)) + " 个，先看看合不合眼缘。",
     }
 
 

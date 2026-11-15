@@ -85,7 +85,7 @@ watch(sort, load)
         <div class="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
           <div class="mb-1.5 text-xs font-bold">🌱 关于 AI校园社区</div>
           <p class="text-[12px] leading-relaxed text-slate-500">
-            一个更懂你的校园社区。AI 帮你查事务、润色文字、找同频的同学，但不会替你发言。
+            校园里的事本来就散：通知在教务系统，二手在朋友圈，找搭子在群公告。这里把它们收在一处。AI 帮你查、帮你写，但话还是你自己说。
           </p>
         </div>
       </aside>
@@ -96,10 +96,10 @@ watch(sort, load)
           class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-700 via-brand-800 to-slate-900 p-7 text-brand-50 shadow-soft"
         >
           <h1 class="text-2xl font-extrabold leading-tight tracking-tight sm:text-[30px]">
-            让每一次校园连接，<br />都被 AI 温柔接住。
+            校园里的事，<br />问一声就有人答。
           </h1>
           <p class="mt-2 max-w-lg text-sm text-brand-100/80">
-            AI校园社区把「校园问答、发帖助手、搭子匹配」放进同一个社区。你不用再翻十个群，也不必独自摸索。
+            查通知、找搭子、把话说顺，都在一个地方。AI 帮你查，同学帮你出主意。
           </p>
           <div class="mt-5 flex flex-wrap gap-2.5">
             <button class="btn btn-ai" @click="router.push('/ai')">✨ 问问 AI 助手</button>
@@ -189,7 +189,7 @@ watch(sort, load)
 
         <section class="ai-panel space-y-2">
           <div class="flex items-center gap-2 text-sm font-bold"><span class="h-2 w-2 rounded-full bg-ai-500" /> AI 助手</div>
-          <p class="m-0 text-xs text-slate-500">校园事务问答、帖子润色、搭子匹配，一处搞定。</p>
+          <p class="m-0 text-xs text-slate-500">不知道问谁的时候，先问它。校园里的事基本都答得上来。</p>
           <button class="btn btn-sm btn-ai" @click="router.push('/ai')">和 AI 聊聊 →</button>
         </section>
 
@@ -206,11 +206,6 @@ watch(sort, load)
               <span class="line-clamp-2">{{ post.title }}</span>
             </li>
           </ul>
-        </section>
-
-        <section class="rounded-2xl border border-slate-200 bg-white p-4 text-[12px] text-slate-500 dark:border-slate-800 dark:bg-slate-900">
-          <div class="mb-1 text-xs font-bold text-slate-700 dark:text-slate-200">赛题对应</div>
-          传智杯 · AI Web 赛道：场景设计 + AI 集成 + 界面工程。智慧校园方向作品。
         </section>
       </aside>
     </div>
